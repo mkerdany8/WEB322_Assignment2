@@ -6,7 +6,9 @@
 * 
 *  https://www.senecapolytechnic.ca/about/policies/academic-integrity-policy.html
 * 
-*  Name: Moustafa Elkerdany Student ID: _126088244_____________ Date: ____07/11/2025
+*  Name: Moustafa Elkerdany Student ID:126088244 Date: 7/11/2025
+*
+*  Published URL: https://web-322-assignment2-kappa.vercel.app/
 *
 ********************************************************************************/
 
