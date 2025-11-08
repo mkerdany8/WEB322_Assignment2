@@ -1,53 +1,80 @@
 /********************************************************************************
-*  WEB322 – Assignment 01
+*  WEB322 – Assignment 02
 * 
 *  I declare that this assignment is my own work in accordance with Seneca's
 *  Academic Integrity Policy:
 * 
 *  https://www.senecapolytechnic.ca/about/policies/academic-integrity-policy.html
 * 
-*  Name: Moustafa Elkerdany Student ID: _126088244_____________ Date: ____18/10/2025
+*  Name: Moustafa Elkerdany Student ID: _126088244_____________ Date: ____07/11/2025
 *
 ********************************************************************************/
+
+const path = require("path"); 
 const projectData = require("./modules/projects");
 const express = require("express");
 const app = express();
 const HTTP_PORT = process.env.PORT || 8080;
 
 
+//EJS view engine
+app.set("view engine", "ejs");                          
+app.set("views", path.join(__dirname, "views"));        
+
+//static files 
+app.use(express.static(path.join(__dirname, "public"))); 
+
 projectData.initialize()
     .then(() => {
         console.log("Project data initialized successfully.");
 
-        // GET
+        // GET Home Page
         app.get("/", (req, res) => {
-            res.send("Assignment 1: Moustafa Elkerdany - 126088244");
-        });
-
-        //●	GET "/solutions/projects"
-        app.get("/solutions/projects", (req, res) => {
             projectData.getAllProjects()
-                .then((projects) => res.json(projects))
-                .catch((err) => res.status(500).send(err));
+                .then(projects => res.render("home", { projects }))
+                .catch(() => res.status(500).send("Failed to load projects"));
         });
 
-        //●	GET "/solutions/projects/id-demo"
-        app.get("/solutions/projects/id-demo", (req, res) => {
-            projectData.getProjectById(1)
-                .then((project) => res.json(project))
-                .catch((err) => res.status(404).send(err));
+        // GET About Page
+        app.get("/about", (req, res) => res.render("about"));
+
+        // GET "/solutions/projects/:id"
+        app.get("/solutions/projects/:id", (req, res) => {
+            const id = parseInt(req.params.id);
+            projectData.getProjectById(id)
+                .then(project => res.render("project", { project }))
+                .catch(err => res.status(404).render("404", { message: "Sorry, we're unable to find what you're looking for" }));
         });
 
-        // ●	GET "/solutions/projects/sector-demo"
-        app.get("/solutions/projects/sector-demo", (req, res) => {
-            projectData.getProjectsBySector("ind")
-                .then((projects) => res.json(projects))
-                .catch((err) => res.status(404).send(err));
+        // GET "/solutions/projects" 
+        app.get("/solutions/projects", (req, res) => {
+            if (req.query.sector) {
+                projectData.getProjectsBySector(req.query.sector)
+                .then(projects => {
+                    res.render("projects", { projects });
+                })
+                .catch(err => {
+                    res.status(404).render("404", { message: "Sorry, we're unable to find what you're looking for" });
+                });
+            } else {
+                projectData.getAllProjects()
+                .then(projects => {
+                    res.render("projects", { projects });
+                })
+                .catch(err => {
+                    res.status(500).render("404", { message: "Failed to load all projects." });
+                });
+            }
         });
 
-        
+
+        //404 Page 
+        app.use((req, res) => {
+            res.status(404).render("404", { message: "Sorry, we're unable to find what you're looking for" });
+        });
+
         app.listen(HTTP_PORT, () => {
             console.log(`Server is running on port ${HTTP_PORT}`);
         });
     })
-    .catch((err) => console.log("Initialization failed:", err));
+    .catch(err => console.log("Initialization failed:", err));

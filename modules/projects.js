@@ -48,7 +48,7 @@ function getAllProjects() {
 //getProjectById
 function getProjectById(projectId) {
     return new Promise((resolve, reject) => {
-        const project = projects.find((p) => p.id === projectId);
+        const project = projects.find((p) => p.id === Number(projectId));
         if (project) {
             resolve(project);
         } else {
