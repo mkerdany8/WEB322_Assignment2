@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="cupcake">
+<head>
+  <meta charset="UTF-8">
+  <title>Login</title>
+  <link rel="stylesheet" href="/css/main.css">
+</head>
+
+<body>
+
+<%- include('partials/navbar') %>
+
+<div class="hero min-h-screen bg-base-200 flex justify-center items-center">
+  <div class="card shadow-xl p-10 bg-white w-[400px]">
+
+      <h1 class="text-3xl font-bold text-center mb-4">Admin Login</h1>
+
+      <form method="POST" action="/login" class="flex flex-col gap-3">
+
+        <input type="text" name="userName" placeholder="User Name" class="input input-bordered w-full" 
+               value="<%= userName %>" required>
+
+        <input type="password" name="password" placeholder="Password" class="input input-bordered w-full" required>
+
+        <button class="btn btn-primary w-full mt-2">Login</button>
+      </form>
+
+      <% if (errorMessage) { %>
+      <div role="alert" class="alert alert-error mt-3">
+        <span><%= errorMessage %></span>
+      </div>
+      <% } %>
+
+  </div>
+</div>
+
+</body>
+</html>

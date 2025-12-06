@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="cupcake">
+<head>
+  <meta charset="UTF-8" />
+  <title>500 - Server Error</title>
+  <link rel="stylesheet" href="/css/main.css" />
+</head>
+
+<body>
+
+<%- include('partials/navbar') %>
+
+<div class="hero min-h-[60vh] text-center flex items-center justify-center">
+    <div>
+        <h1 class="text-6xl font-bold">500</h1>
+        <p class="text-lg mt-3">Something went wrong on our end.</p>
+
+        <% if (message) { %>
+            <p class="mt-4 text-red-500 font-semibold"><%= message %></p>
+        <% } %>
+
+        <a href="/" class="btn btn-primary mt-6">Return Home</a>
+    </div>
+</div>
+
+</body>
+</html>

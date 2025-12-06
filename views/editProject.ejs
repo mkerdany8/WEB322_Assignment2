@@ -1,0 +1,31 @@
+<%- include('partials/navbar') %>
+
+<h1 class="text-3xl font-bold mb-6">Edit Project – <%= project.title %></h1>
+
+<form method="POST" action="/solutions/editProject" class="space-y-4">
+
+    <input type="hidden" name="id" value="<%= project.id %>">
+
+    <input type="text" name="title" value="<%= project.title %>" required class="input input-bordered w-full"/>
+
+    <input type="url" name="feature_img_url" value="<%= project.feature_img_url %>" required class="input input-bordered w-full"/>
+
+    <select name="sector_id" required class="select select-bordered w-full">
+        <option value="1" <%= project.sector_id == 1 ? "selected" : "" %>>Land Sinks</option>
+        <option value="2" <%= project.sector_id == 2 ? "selected" : "" %>>Industry</option>
+        <option value="3" <%= project.sector_id == 3 ? "selected" : "" %>>Transportation</option>
+        <option value="4" <%= project.sector_id == 4 ? "selected" : "" %>>Electricity</option>
+        <option value="5" <%= project.sector_id == 5 ? "selected" : "" %>>Food, Agriculture, and Land Use</option>
+    </select>
+
+    <textarea name="intro_short" required class="textarea textarea-bordered w-full"><%= project.intro_short %></textarea>
+
+    <textarea name="summary_short" required class="textarea textarea-bordered w-full"><%= project.summary_short %></textarea>
+
+    <textarea name="impact" required class="textarea textarea-bordered w-full"><%= project.impact %></textarea>
+
+    <input type="url" name="original_source_url" value="<%= project.original_source_url %>" required class="input input-bordered w-full"/>
+
+    <button class="btn btn-primary w-full">Update Project</button>
+
+</form>

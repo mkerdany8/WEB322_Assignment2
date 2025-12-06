@@ -1,80 +1,128 @@
 /********************************************************************************
-*  WEB322 – Assignment 02
-* 
-*  I declare that this assignment is my own work in accordance with Seneca's
+*  WEB322 – Assignment 03
+* I declare that this assignment is my own work in accordance with Seneca's
 *  Academic Integrity Policy:
 * 
-*  https://www.senecapolytechnic.ca/about/policies/academic-integrity-policy.html
-* 
-*  Name: Moustafa Elkerdany Student ID: _126088244_____________ Date: ____07/11/2025
-*
+*  https://www.senecacollege.ca/about/policies/academic-integrity-policy.html
+
+*  Name: Moustafa Elkerdany  Student ID: 126088244   Date: 5/12/2025
+*  Published URL: https://web-322-assignment2-kappa.vercel.app/
 ********************************************************************************/
 
-const path = require("path"); 
-const projectData = require("./modules/projects");
+require("dotenv").config();
+const path = require("path");
 const express = require("express");
+const clientSessions = require("client-sessions");
+const data = require("./modules/projects.js");
 const app = express();
-const HTTP_PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 8080;
 
 
-//EJS view engine
-app.set("view engine", "ejs");                          
-app.set("views", path.join(__dirname, "views"));        
+// middleware
+app.use(express.urlencoded({ extended: true }));
 
-//static files 
-app.use(express.static(path.join(__dirname, "public"))); 
+app.use(clientSessions({
+    cookieName: "session",
+    secret: process.env.SESSIONSECRET,
+    duration: 24*60*60*1000,
+    activeDuration: 1000*60*5
+}));
 
-projectData.initialize()
-    .then(() => {
-        console.log("Project data initialized successfully.");
+// make session available in EJS
+app.use((req,res,next)=>{
+    res.locals.session = req.session;
+    next();
+});
 
-        // GET Home Page
-        app.get("/", (req, res) => {
-            projectData.getAllProjects()
-                .then(projects => res.render("home", { projects }))
-                .catch(() => res.status(500).send("Failed to load projects"));
-        });
-
-        // GET About Page
-        app.get("/about", (req, res) => res.render("about"));
-
-        // GET "/solutions/projects/:id"
-        app.get("/solutions/projects/:id", (req, res) => {
-            const id = parseInt(req.params.id);
-            projectData.getProjectById(id)
-                .then(project => res.render("project", { project }))
-                .catch(err => res.status(404).render("404", { message: "Sorry, we're unable to find what you're looking for" }));
-        });
-
-        // GET "/solutions/projects" 
-        app.get("/solutions/projects", (req, res) => {
-            if (req.query.sector) {
-                projectData.getProjectsBySector(req.query.sector)
-                .then(projects => {
-                    res.render("projects", { projects });
-                })
-                .catch(err => {
-                    res.status(404).render("404", { message: "Sorry, we're unable to find what you're looking for" });
-                });
-            } else {
-                projectData.getAllProjects()
-                .then(projects => {
-                    res.render("projects", { projects });
-                })
-                .catch(err => {
-                    res.status(500).render("404", { message: "Failed to load all projects." });
-                });
-            }
-        });
+// view engine + public folder
+app.set("view engine","ejs");
+app.set("views", path.join(__dirname,"views"));
+app.use(express.static(path.join(__dirname,"public")));
 
 
-        //404 Page 
-        app.use((req, res) => {
-            res.status(404).render("404", { message: "Sorry, we're unable to find what you're looking for" });
-        });
+//LOGIN AUTH 
+function ensureLogin(req,res,next){
+    if(!req.session.user) return res.redirect("/login");
+    next();
+}
 
-        app.listen(HTTP_PORT, () => {
-            console.log(`Server is running on port ${HTTP_PORT}`);
-        });
-    })
-    .catch(err => console.log("Initialization failed:", err));
+app.get("/login",(req,res)=> res.render("login",{errorMessage:"",userName:""}));
+
+app.post("/login",(req,res)=>{
+    if(req.body.userName === process.env.ADMINUSER &&
+       req.body.password === process.env.ADMINPASSWORD){
+        req.session.user = { userName:req.body.userName };
+        return res.redirect("/solutions/projects");
+    }
+    res.render("login",{ errorMessage:"Invalid Login", userName:req.body.userName });
+});
+
+app.get("/logout",(req,res)=>{ req.session.reset(); res.redirect("/"); });
+
+
+
+
+app.get("/solutions/addProject", ensureLogin,(req,res)=> res.render("addProject"));
+
+app.post("/solutions/addProject", ensureLogin,(req,res)=>{
+    data.addProject(req.body)
+        .then(()=>res.redirect("/solutions/projects"))
+        .catch(err=>res.render("500",{message:err}));
+});
+
+app.get("/solutions/editProject/:id", ensureLogin,(req,res)=>{
+    data.getProjectById(req.params.id)
+        .then(project=>res.render("editProject",{project}))
+        .catch(()=>res.status(404).render("404",{message:"Project Not Found"}));
+});
+
+app.post("/solutions/editProject", ensureLogin,(req,res)=>{
+    data.editProject(req.body.id,req.body)
+        .then(()=>res.redirect("/solutions/projects"))
+        .catch(err=>res.render("500",{message:err}));
+});
+
+app.get("/solutions/deleteProject/:id", ensureLogin,(req,res)=>{
+    data.deleteProject(req.params.id)
+        .then(()=>res.redirect("/solutions/projects"))
+        .catch(err=>res.render("500",{message:err}));
+});
+
+
+
+data.initialize().then(()=>{
+
+    console.log("DB Ready");
+
+    app.get("/",(req,res)=>{
+        data.getAllProjects()
+        .then(p=>res.render("home",{projects:p}))
+        .catch(()=>res.render("500",{message:"Load Error"}));
+    });
+
+    app.get("/about",(req,res)=> res.render("about"));
+
+    app.get("/solutions/projects",(req,res)=>{
+        if(req.query.sector){
+            data.getProjectsBySector(req.query.sector)
+            .then(p=>res.render("projects",{projects:p}))
+            .catch(()=>res.render("404",{message:"No Projects"}));
+        } else {
+            data.getAllProjects()
+            .then(p=>res.render("projects",{projects:p}))
+            .catch(()=>res.render("500",{message:"Error Loading"}));
+        }
+    });
+
+    app.get("/solutions/projects/:id",(req,res)=>{
+        data.getProjectById(req.params.id)
+        .then(p=>res.render("project",{project:p}))
+        .catch(()=>res.render("404",{message:"Not Found"}));
+    });
+
+    app.get("/500",(req,res)=>res.render("500",{message:"Server Error"}));
+    app.use((req,res)=>res.render("404",{message:"Page Not Found"}));
+
+    app.listen(PORT,()=>console.log(`Running → http://localhost:${PORT}`));
+
+});
