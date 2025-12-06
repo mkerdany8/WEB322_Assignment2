@@ -7,8 +7,8 @@ const sequelize = new Sequelize(
   process.env.PGUSER,
   process.env.PGPASSWORD,
   {
-    host: process.env.PGHOST,         // we can change this later if needed
-    port: 5432,                       // we will test this first
+    host: process.env.PGHOST,         
+    port: 5432,                       
     dialect: "postgres",
     dialectModule: require("pg"),
     logging: false,
