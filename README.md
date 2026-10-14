@@ -2,7 +2,7 @@
 
 A full-stack Node.js web application that catalogues climate solutions organised by sector, with a password-protected admin area for managing entries.
 
-**Live site:** https://web-322-assignment2-kappa.vercel.app
+**Live site:** https://climate-solutions-mk.vercel.app
 
 ## Features
 
