@@ -9,6 +9,9 @@ let sequelize = new Sequelize(
     {
         host: process.env.PGHOST,
         dialect: "postgres",
+        // Sequelize loads the driver with a dynamic require, which bundlers
+        // cannot trace. Passing it explicitly keeps pg in the deployed bundle.
+        dialectModule: require("pg"),
         dialectOptions: {
             ssl: { require: true, rejectUnauthorized: false }
         }
