@@ -1,48 +1,76 @@
-<!DOCTYPE html>
-<html lang="en" data-theme="cupcake">
-<head>
-  <meta charset="UTF-8" />
-  <title>About Moustafa Elkerdany</title>
-  <link rel="stylesheet" href="/css/main.css" />
-</head>
+<%- include('partials/head', { pageTitle: "About — Climate Solutions" }) %>
 
-<body>
-    <%- include('partials/navbar') %>
+<section class="bg-surface border-b border-rule">
+  <div class="mx-auto max-w-3xl px-5 py-14">
+    <h1 class="font-display text-3xl sm:text-4xl">About this project</h1>
+  </div>
+</section>
 
-  <!-- Hero Section -->
-  <div class="hero bg-base-200 min-h-[40vh]">
-    <div class="hero-content text-center">
-      <div>
-        <h1>My short story</h1>
-        <p class>Moustafa Elkerdany</p>
+<section class="mx-auto max-w-3xl px-5 py-12 flex flex-col gap-10">
+
+  <div>
+    <h2 class="font-display text-xl">What it does</h2>
+    <p class="mt-3 leading-relaxed max-w-prose">
+      This site catalogues climate solutions and groups them by the sector they act on,
+      so you can look at one part of the economy at a time. Each entry describes the
+      solution, what effect it has, and links out to the original research.
+    </p>
+  </div>
+
+  <div>
+    <h2 class="font-display text-xl">How it is built</h2>
+    <p class="mt-3 leading-relaxed max-w-prose">
+      A Node.js and Express application rendering EJS templates on the server. Solutions
+      and sectors live in a PostgreSQL database, accessed through Sequelize, with the two
+      tables joined so every solution carries its sector. Adding, editing and deleting
+      entries sits behind a session-based login, and the whole thing runs on Vercel.
+    </p>
+    <dl class="mt-6 border-t border-rule text-sm">
+      <div class="flex gap-4 py-2.5 border-b border-rule">
+        <dt class="w-32 shrink-0 text-muted">Server</dt>
+        <dd>Node.js, Express</dd>
       </div>
+      <div class="flex gap-4 py-2.5 border-b border-rule">
+        <dt class="w-32 shrink-0 text-muted">Templating</dt>
+        <dd>EJS</dd>
+      </div>
+      <div class="flex gap-4 py-2.5 border-b border-rule">
+        <dt class="w-32 shrink-0 text-muted">Data</dt>
+        <dd>PostgreSQL, Sequelize</dd>
+      </div>
+      <div class="flex gap-4 py-2.5 border-b border-rule">
+        <dt class="w-32 shrink-0 text-muted">Styling</dt>
+        <dd>Tailwind CSS</dd>
+      </div>
+      <div class="flex gap-4 py-2.5 border-b border-rule">
+        <dt class="w-32 shrink-0 text-muted">Hosting</dt>
+        <dd>Vercel</dd>
+      </div>
+    </dl>
+  </div>
+
+  <div>
+    <h2 class="font-display text-xl">Who built it</h2>
+    <p class="mt-3 leading-relaxed max-w-prose">
+      Moustafa Elkerdany, a Computer Programming student at Seneca Polytechnic. I work
+      mostly in JavaScript, Python and C++, and I am interested in Linux, cloud and
+      networking.
+    </p>
+    <div class="mt-5 flex flex-wrap gap-2">
+      <a href="https://github.com/mkerdany8" target="_blank" rel="noopener" class="btn-quiet">GitHub</a>
+      <a href="mailto:mkerdany8@gmail.com" class="btn-quiet">Email</a>
     </div>
   </div>
 
-  <!-- About Grid Section -->
-  <div class="container mx-auto p-8">
-    <div class="grid items-center">
-
-      <!-- Left Column: Image -->
-      <div class>
-        <img src="https://www.elitefts.com/wp/wp-content/uploads/2010/11/BRENT_METCALF.jpg" alt="Moustafa Elkerdany" />
-      </div>
-
-      
-      <div>
-        <h2 class>Hello! I'm Moustafa</h2>
-        <p>
-          I’m a Computer Programming student at Seneca College. I enjoy creating projects
-          in languages like C, C++, JavaScript, and Python.
-        </p>
-        <p class>
-          Outside of coding, I’m a competitive wrestler, always training hard to improve
-          both mentally and physically. I enjoy gaming, exploring tech, and continuously learning new skills
-          related to software development.
-        </p>
-      </div>
-
-    </div>
+  <div>
+    <h2 class="font-display text-xl">Sources</h2>
+    <p class="mt-3 leading-relaxed max-w-prose">
+      Solution descriptions and imagery come from
+      <a href="https://drawdown.org" target="_blank" rel="noopener" class="text-leaf underline underline-offset-2">Project Drawdown</a>,
+      a non-profit that reviews and ranks climate solutions by the emissions they avoid.
+    </p>
   </div>
-</body>
-</html>
+
+</section>
+
+<%- include('partials/foot') %>

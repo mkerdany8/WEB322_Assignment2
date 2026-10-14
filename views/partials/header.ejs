@@ -1,0 +1,25 @@
+<header class="bg-surface border-b border-rule">
+  <div class="mx-auto max-w-6xl px-5">
+    <div class="flex items-center justify-between gap-4 py-4">
+
+      <a href="/" class="font-display text-xl text-ink leading-none">
+        Climate Solutions
+      </a>
+
+      <nav class="flex items-center gap-1 text-sm">
+        <a href="/solutions/projects" class="px-3 py-2 text-muted hover:text-ink">Solutions</a>
+        <a href="/about" class="px-3 py-2 text-muted hover:text-ink">About</a>
+
+        <% if (locals.session && locals.session.user) { %>
+          <a href="/solutions/addProject" class="px-3 py-2 text-leaf hover:text-ink">Add solution</a>
+          <a href="/logout" class="px-3 py-2 text-muted hover:text-ink">
+            Sign out<span class="hidden sm:inline"> (<%= locals.session.user.userName %>)</span>
+          </a>
+        <% } else { %>
+          <a href="/login" class="px-3 py-2 text-muted hover:text-ink">Sign in</a>
+        <% } %>
+      </nav>
+
+    </div>
+  </div>
+</header>

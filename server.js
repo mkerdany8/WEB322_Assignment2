@@ -18,6 +18,20 @@ const app = express();
 const PORT = process.env.PORT || 8080;
 
 
+// Sector identity. Each sector carries its own colour through cards, chips and
+// filters, so the colour communicates which domain a solution acts on. Class
+// names are written out in full because the CSS build scans for literal strings.
+const SECTORS = {
+    "Land Sinks":                      { rule:"bg-land",        chip:"border-land text-land" },
+    "Industry":                        { rule:"bg-industry",    chip:"border-industry text-industry" },
+    "Transportation":                  { rule:"bg-transport",   chip:"border-transport text-transport" },
+    "Electricity":                     { rule:"bg-electricity", chip:"border-electricity text-electricity" },
+    "Food, Agriculture, and Land Use": { rule:"bg-food",        chip:"border-food text-food" }
+};
+
+app.locals.sector = name => SECTORS[name] || { rule:"bg-muted", chip:"border-rule text-muted" };
+
+
 // middleware
 app.use(express.urlencoded({ extended: true }));
 
@@ -62,7 +76,11 @@ app.get("/logout",(req,res)=>{ req.session.reset(); res.redirect("/"); });
 
 
 
-app.get("/solutions/addProject", ensureLogin,(req,res)=> res.render("addProject"));
+app.get("/solutions/addProject", ensureLogin,(req,res)=>{
+    data.getAllSectors()
+        .then(sectors=>res.render("addProject",{sectors}))
+        .catch(err=>res.status(500).render("500",{message:err}));
+});
 
 app.post("/solutions/addProject", ensureLogin,(req,res)=>{
     data.addProject(req.body)
@@ -71,9 +89,9 @@ app.post("/solutions/addProject", ensureLogin,(req,res)=>{
 });
 
 app.get("/solutions/editProject/:id", ensureLogin,(req,res)=>{
-    data.getProjectById(req.params.id)
-        .then(project=>res.render("editProject",{project}))
-        .catch(()=>res.status(404).render("404",{message:"Project Not Found"}));
+    Promise.all([ data.getProjectById(req.params.id), data.getAllSectors() ])
+        .then(([project,sectors])=>res.render("editProject",{project,sectors}))
+        .catch(()=>res.status(404).render("404",{message:"That solution could not be found."}));
 });
 
 app.post("/solutions/editProject", ensureLogin,(req,res)=>{
@@ -97,31 +115,28 @@ data.initialize().then(()=>{
     app.get("/",(req,res)=>{
         data.getAllProjects()
         .then(p=>res.render("home",{projects:p}))
-        .catch(()=>res.render("500",{message:"Load Error"}));
+        .catch(()=>res.status(500).render("500",{message:null}));
     });
 
     app.get("/about",(req,res)=> res.render("about"));
 
     app.get("/solutions/projects",(req,res)=>{
-        if(req.query.sector){
-            data.getProjectsBySector(req.query.sector)
-            .then(p=>res.render("projects",{projects:p}))
-            .catch(()=>res.render("404",{message:"No Projects"}));
-        } else {
-            data.getAllProjects()
-            .then(p=>res.render("projects",{projects:p}))
-            .catch(()=>res.render("500",{message:"Error Loading"}));
-        }
+        const chosen = req.query.sector || null;
+        const list = chosen ? data.getProjectsBySector(chosen) : data.getAllProjects();
+
+        Promise.all([ list.catch(()=>[]), data.getAllSectors() ])
+        .then(([projects,sectors])=>res.render("projects",{projects,sectors,activeSector:chosen}))
+        .catch(err=>res.status(500).render("500",{message:err}));
     });
 
     app.get("/solutions/projects/:id",(req,res)=>{
         data.getProjectById(req.params.id)
         .then(p=>res.render("project",{project:p}))
-        .catch(()=>res.render("404",{message:"Not Found"}));
+        .catch(()=>res.status(404).render("404",{message:"That solution could not be found."}));
     });
 
     app.get("/500",(req,res)=>res.render("500",{message:"Server Error"}));
-    app.use((req,res)=>res.render("404",{message:"Page Not Found"}));
+    app.use((req,res)=>res.status(404).render("404",{message:"Check the address, or start from the catalogue."}));
 
     app.listen(PORT,()=>console.log(`Running → http://localhost:${PORT}`));
 

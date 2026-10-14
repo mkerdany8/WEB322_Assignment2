@@ -1,0 +1,23 @@
+<%- include('partials/head', { pageTitle: "Something went wrong — Climate Solutions" }) %>
+
+<section class="mx-auto max-w-xl px-5 py-24 text-center">
+
+  <p class="font-display text-5xl text-muted">500</p>
+
+  <h1 class="mt-4 font-display text-2xl">The catalogue could not be loaded</h1>
+
+  <p class="mt-3 text-muted">
+    The server could not reach its data. Reloading in a moment usually works.
+  </p>
+
+  <% if (message) { %>
+    <p class="mt-4 text-sm text-transport"><%= message %></p>
+  <% } %>
+
+  <div class="mt-8 flex flex-wrap gap-3 justify-center">
+    <a href="/" class="btn-solid">Try the homepage</a>
+  </div>
+
+</section>
+
+<%- include('partials/foot') %>

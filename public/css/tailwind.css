@@ -1,6 +1,108 @@
 @import "tailwindcss";
 
+@source "../../views";
+@source "../../server.js";
+
 @plugin "@tailwindcss/typography";
-@plugin "daisyui";
 
+@theme {
+  --font-display: "Newsreader", Georgia, "Times New Roman", serif;
+  --font-sans: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
 
+  /* Ground and ink */
+  --color-paper: #f2f4f1;
+  --color-surface: #ffffff;
+  --color-ink: #11231b;
+  --color-muted: #5a6b61;
+  --color-rule: #d9ded8;
+
+  /* Primary action */
+  --color-leaf: #1f4d3a;
+  --color-leaf-deep: #163828;
+
+  /* Sector identity */
+  --color-land: #4a7c59;
+  --color-industry: #6b5b7b;
+  --color-transport: #b4663a;
+  --color-electricity: #2e6f8e;
+  --color-food: #7d8c38;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible,
+  summary:focus-visible {
+    outline: 2px solid var(--color-leaf);
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  .field {
+    width: 100%;
+    border: 1px solid var(--color-rule);
+    background: var(--color-surface);
+    border-radius: 2px;
+    padding: 0.625rem 0.75rem;
+    font-size: 0.95rem;
+    font-family: var(--font-sans);
+    color: var(--color-ink);
+  }
+
+  .field::placeholder { color: #9aa79f; }
+
+  .label {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--color-muted);
+    margin-bottom: 0.3rem;
+  }
+
+  .btn-solid {
+    display: inline-block;
+    background: var(--color-leaf);
+    color: #fff;
+    padding: 0.6rem 1.15rem;
+    border-radius: 2px;
+    font-size: 0.925rem;
+    border: 1px solid var(--color-leaf);
+    cursor: pointer;
+  }
+
+  .btn-solid:hover { background: var(--color-leaf-deep); }
+
+  .btn-quiet {
+    display: inline-block;
+    background: transparent;
+    color: var(--color-ink);
+    padding: 0.5rem 0.9rem;
+    border-radius: 2px;
+    font-size: 0.875rem;
+    border: 1px solid var(--color-rule);
+  }
+
+  .btn-quiet:hover { border-color: var(--color-ink); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

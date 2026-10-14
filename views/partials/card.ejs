@@ -1,0 +1,38 @@
+<% const s = sector(project.Sector && project.Sector.sector_name); %>
+<article class="bg-surface border border-rule flex flex-col">
+
+  <div class="h-1 <%= s.rule %>"></div>
+
+  <a href="/solutions/projects/<%= project.id %>" class="block bg-paper">
+    <img src="<%= project.feature_img_url %>"
+         alt=""
+         loading="lazy"
+         class="w-full h-44 object-cover" />
+  </a>
+
+  <div class="p-5 flex flex-col gap-3 flex-1">
+
+    <% if (project.Sector) { %>
+      <a href="/solutions/projects?sector=<%= encodeURIComponent(project.Sector.sector_name) %>"
+         class="self-start text-xs px-2 py-0.5 border rounded-full <%= s.chip %>">
+        <%= project.Sector.sector_name %>
+      </a>
+    <% } %>
+
+    <h3 class="font-display text-lg leading-snug">
+      <a href="/solutions/projects/<%= project.id %>" class="hover:underline underline-offset-2">
+        <%= project.title %>
+      </a>
+    </h3>
+
+    <p class="text-sm text-muted leading-relaxed flex-1"><%= project.summary_short %></p>
+
+    <% if (locals.session && locals.session.user) { %>
+      <div class="flex gap-2 pt-1">
+        <a href="/solutions/editProject/<%= project.id %>" class="btn-quiet">Edit</a>
+        <a href="/solutions/deleteProject/<%= project.id %>" class="btn-quiet">Delete</a>
+      </div>
+    <% } %>
+
+  </div>
+</article>

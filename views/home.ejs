@@ -1,66 +1,61 @@
-<!DOCTYPE html>
-<html lang="en" data-theme="cupcake">
-<head>
-  <meta charset="UTF-8" />
-  <title>Climate Solutions</title>
-  <link rel="stylesheet" href="/css/main.css" />
-</head>
+<%- include('partials/head', { pageTitle: "Climate Solutions" }) %>
 
-<body>
-  <%- include('partials/navbar') %>
+<%
+  const counts = {};
+  projects.forEach(p => {
+    const name = p.Sector && p.Sector.sector_name;
+    if (name) counts[name] = (counts[name] || 0) + 1;
+  });
+  const sectorNames = Object.keys(counts);
+  const featured = projects.slice(0, 6);
+%>
 
-  <!-- Hero Section -->
-  <div class="hero">
-    <div class="hero-content text-center">
-      <div>
-        <h1>Explore Climate Solutions</h1>
-        <p class>Discover innovative ideas that help protect our planet.</p>
-        <a href="/solutions/projects" class="btn btn-primary mt-4">View All Projects</a>
-      </div>
+<section class="bg-surface border-b border-rule">
+  <div class="mx-auto max-w-6xl px-5 py-14 sm:py-20">
+
+    <h1 class="font-display text-4xl sm:text-5xl leading-tight max-w-2xl">
+      <%= projects.length %> ways to stop putting carbon in the air
+    </h1>
+
+    <p class="mt-5 max-w-xl text-muted leading-relaxed">
+      Every solution here already exists and already works. They are grouped by the
+      part of the economy they act on, because that is usually what decides who can
+      put one into practice.
+    </p>
+
+    <div class="mt-10 border-t border-rule">
+      <% sectorNames.forEach(name => { const s = sector(name); %>
+        <a href="/solutions/projects?sector=<%= encodeURIComponent(name) %>"
+           class="flex items-center gap-4 py-3 border-b border-rule group">
+          <span class="w-1 h-6 shrink-0 <%= s.rule %>"></span>
+          <span class="flex-1 group-hover:underline underline-offset-4"><%= name %></span>
+          <span class="text-sm text-muted tabular-nums"><%= counts[name] %></span>
+        </a>
+      <% }) %>
     </div>
+
+  </div>
+</section>
+
+<section class="mx-auto max-w-6xl px-5 py-14">
+
+  <div class="flex items-baseline justify-between gap-4 mb-6">
+    <h2 class="font-display text-2xl">A place to start</h2>
+    <a href="/solutions/projects" class="text-sm text-leaf hover:underline underline-offset-2">
+      See all <%= projects.length %>
+    </a>
   </div>
 
-  <!-- Project Cards Grid -->
-  <div class="container mx-auto">
-    <div class="grid">
-      
-      <!-- Card 1 -->
-      <div class="card">
-        <figure>
-          <img src="https://drawdown.org/sites/default/files/solutions/solution_farmlandrestoration01.jpg" alt="Abandoned Farmland Restoration" />
-        </figure>
-        <div class="card-body">
-          <h2>Abandoned Farmland Restoration</h2>
-          <p>Restoration can bring degraded farmland back into productivity and sequester carbon in the process.</p>
-          <a href="/solutions/projects/1" class="btn btn-primary">View</a>
-        </div>
-      </div>
-
-      <!-- Card 2 -->
-      <div class="card">
-        <figure>
-          <img src="https://drawdown.org/sites/default/files/solutions2020/solution_alternativecement02.jpg" alt="Alternative Cement" />
-        </figure>
-        <div class="card-body">
-          <h2>Alternative Cement</h2>
-          <p>Conventional cement production is a significant source of carbon dioxide. Reformulation can reduce emissions.</p>
-          <a href="/solutions/projects/2" class="btn btn-primary">View</a>
-        </div>
-      </div>
-
-      <!-- Card 3 -->
-      <div class="card">
-        <figure>
-          <img src="https://drawdown.org/sites/default/files/solutions2020/solution_bicycle_infrastructure.jpg" alt="Bicycle Infrastructure" />
-        </figure>
-        <div class="card-body">
-          <h2>Bicycle Infrastructure</h2>
-          <p>Infrastructure is important for supporting safe bicycle use, reducing the need for cars.</p>
-          <a href="/solutions/projects/3" class="btn btn-primary">View</a>
-        </div>
-      </div>
-
+  <% if (featured.length) { %>
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <% featured.forEach(project => { %>
+        <%- include('partials/card', { project: project }) %>
+      <% }) %>
     </div>
-  </div>
-</body>
-</html>
+  <% } else { %>
+    <p class="text-muted">No solutions have been added yet.</p>
+  <% } %>
+
+</section>
+
+<%- include('partials/foot') %>

@@ -1,38 +1,36 @@
-<!DOCTYPE html>
-<html lang="en" data-theme="cupcake">
-<head>
-  <meta charset="UTF-8">
-  <title>Login</title>
-  <link rel="stylesheet" href="/css/main.css">
-</head>
+<%- include('partials/head', { pageTitle: "Sign in — Climate Solutions" }) %>
 
-<body>
+<section class="mx-auto max-w-md px-5 py-16">
 
-<%- include('partials/navbar') %>
+  <h1 class="font-display text-2xl">Sign in</h1>
+  <p class="mt-2 text-sm text-muted">
+    Signing in lets you add, edit and remove solutions. Browsing does not require an account.
+  </p>
 
-<div class="hero min-h-screen bg-base-200 flex justify-center items-center">
-  <div class="card shadow-xl p-10 bg-white w-[400px]">
+  <% if (errorMessage) { %>
+    <div class="mt-6 border border-transport bg-transport/5 px-4 py-3 text-sm text-transport">
+      <%= errorMessage %>
+    </div>
+  <% } %>
 
-      <h1 class="text-3xl font-bold text-center mb-4">Admin Login</h1>
+  <form method="POST" action="/login" class="mt-6 bg-surface border border-rule p-6 flex flex-col gap-4">
 
-      <form method="POST" action="/login" class="flex flex-col gap-3">
+    <div>
+      <label class="label" for="userName">User name</label>
+      <input id="userName" type="text" name="userName" class="field"
+             value="<%= userName %>" autocomplete="username" required />
+    </div>
 
-        <input type="text" name="userName" placeholder="User Name" class="input input-bordered w-full" 
-               value="<%= userName %>" required>
+    <div>
+      <label class="label" for="password">Password</label>
+      <input id="password" type="password" name="password" class="field"
+             autocomplete="current-password" required />
+    </div>
 
-        <input type="password" name="password" placeholder="Password" class="input input-bordered w-full" required>
+    <button type="submit" class="btn-solid mt-1">Sign in</button>
 
-        <button class="btn btn-primary w-full mt-2">Login</button>
-      </form>
+  </form>
 
-      <% if (errorMessage) { %>
-      <div role="alert" class="alert alert-error mt-3">
-        <span><%= errorMessage %></span>
-      </div>
-      <% } %>
+</section>
 
-  </div>
-</div>
-
-</body>
-</html>
+<%- include('partials/foot') %>

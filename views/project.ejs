@@ -1,51 +1,74 @@
-<!DOCTYPE html>
-<html lang="en" data-theme="cupcake">
-<head>
-  <meta charset="UTF-8">
-  <title><%= project.title %></title>
-  <link rel="stylesheet" href="/css/main.css">
-</head>
+<%- include('partials/head', { pageTitle: project.title + " — Climate Solutions" }) %>
 
-<body>
-  <%- include('partials/navbar') %>
+<% const s = sector(project.Sector && project.Sector.sector_name); %>
 
-  <div class="text-center">
-    <div class="hero-content items-center">
-      <h1 class="text"><%= project.title %></h1>
-      <p class>
-        Below, you will find detailed information about the project: <%= project.title %>
-      </p>
+<article>
+
+  <div class="bg-surface border-b border-rule">
+    <div class="mx-auto max-w-5xl px-5 py-10">
+
+      <a href="/solutions/projects" class="text-sm text-muted hover:text-ink">Back to all solutions</a>
+
+      <% if (project.Sector) { %>
+        <div class="mt-6 flex items-center gap-3">
+          <span class="w-1 h-5 <%= s.rule %>"></span>
+          <a href="/solutions/projects?sector=<%= encodeURIComponent(project.Sector.sector_name) %>"
+             class="text-sm hover:underline underline-offset-2"><%= project.Sector.sector_name %></a>
+        </div>
+      <% } %>
+
+      <h1 class="mt-3 font-display text-3xl sm:text-4xl leading-tight max-w-3xl">
+        <%= project.title %>
+      </h1>
+
     </div>
   </div>
 
-  <div class="container mx-auto">
-    <div class="card">
-      <figure>
-        <img src="<%= project.feature_img_url %>" alt="<%= project.title %>" class="mx-auto">
-      </figure>
-      <div class="card-body">
-        <p><strong>Intro:</strong> <%= project.intro_short %></p>
-        <p><strong>Impact:</strong> <%= project.impact %></p>
-        <a href="<%= project.original_source_url %>" target="_blank">
-        <button class="btn btn-primary">Learn More</button>
-        </a>
+  <div class="mx-auto max-w-5xl px-5 py-10">
+
+    <% if (project.feature_img_url) { %>
+      <img src="<%= project.feature_img_url %>"
+           alt="<%= project.title %>"
+           class="w-full max-h-[26rem] object-cover border border-rule" />
+    <% } %>
+
+    <div class="mt-10 grid gap-10 lg:grid-cols-3">
+
+      <div class="lg:col-span-2 flex flex-col gap-8">
+
+        <section>
+          <h2 class="font-display text-xl">What it is</h2>
+          <p class="mt-3 leading-relaxed text-ink/90 max-w-prose"><%= project.intro_short %></p>
+        </section>
+
+        <section>
+          <h2 class="font-display text-xl">Why it matters</h2>
+          <p class="mt-3 leading-relaxed text-ink/90 max-w-prose"><%= project.impact %></p>
+        </section>
+
       </div>
-    </div>
 
-    <div id="quote" class="text-center"></div>
+      <aside class="lg:col-span-1">
+        <div class="border border-rule bg-surface p-5">
+          <p class="text-sm text-muted leading-relaxed"><%= project.summary_short %></p>
+
+          <% if (project.original_source_url) { %>
+            <a href="<%= project.original_source_url %>" target="_blank" rel="noopener"
+               class="btn-solid mt-5">Read the research</a>
+          <% } %>
+
+          <% if (locals.session && locals.session.user) { %>
+            <div class="mt-5 pt-5 border-t border-rule flex gap-2">
+              <a href="/solutions/editProject/<%= project.id %>" class="btn-quiet">Edit</a>
+              <a href="/solutions/deleteProject/<%= project.id %>" class="btn-quiet">Delete</a>
+            </div>
+          <% } %>
+        </div>
+      </aside>
+
+    </div>
   </div>
 
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      fetch("https://dummyjson.com/quotes/random")
-        .then(res => res.json())
-        .then(data => {
-          document.getElementById("quote").innerHTML = `"${data.quote}" ${data.author}`;
-        })
-        .catch(() => {
-          document.getElementById("quote").innerText = "Quote unavailable.";
-        });
-    });
-  </script>
-</body>
-</html>
+</article>
+
+<%- include('partials/foot') %>

@@ -1,82 +1,46 @@
-<!DOCTYPE html>
-<html lang="en" data-theme="cupcake">
-<head>
-  <meta charset="UTF-8" />
-  <title>Climate Solutions – Projects</title>
-  <link rel="stylesheet" href="/css/main.css" />
-</head>
+<%- include('partials/head', { pageTitle: "Solutions — Climate Solutions" }) %>
 
-<body>
+<section class="bg-surface border-b border-rule">
+  <div class="mx-auto max-w-6xl px-5 py-10">
 
+    <h1 class="font-display text-3xl">
+      <%= activeSector ? activeSector : "All solutions" %>
+    </h1>
 
-  <%- include('partials/navbar') %>
+    <p class="mt-2 text-muted">
+      <%= projects.length %> <%= projects.length === 1 ? "solution" : "solutions" %><%= activeSector ? " in this sector" : "" %>
+    </p>
 
-  
-  <div class="hero">
-    <div class="hero-content text-center">
-      <h1>Climate Projects</h1>
-      <p>Explore all solutions or filter by sector below.</p>
-
-      <!-- Add Project button -->
-      <% if (locals.session && locals.session.user) { %>
-        <a href="/solutions/addProject" class="btn btn-success mb-4">Add Project</a>
-      <% } %>
-
-      <!-- Manual Sector Filter Buttons -->
-      <div class="flex justify-center gap-4 mt-4 flex-wrap">
-        <a href="/solutions/projects" class="btn btn-outline btn-primary">All</a>
-        <a href="/solutions/projects?sector=Industry" class="btn btn-outline">Industry</a>
-        <a href="/solutions/projects?sector=Transportation" class="btn btn-outline">Transportation</a>
-        <a href="/solutions/projects?sector=Electricity" class="btn btn-outline">Electricity</a>
-        <a href="/solutions/projects?sector=Land Sinks" class="btn btn-outline">Land Sinks</a>
-        <a href="/solutions/projects?sector=Buildings" class="btn btn-outline">Buildings</a>
-      </div>
+    <div class="mt-6 flex flex-wrap gap-2">
+      <a href="/solutions/projects"
+         class="text-sm px-3 py-1.5 border rounded-full <%= activeSector ? 'border-rule text-muted hover:border-ink hover:text-ink' : 'border-ink text-ink' %>">
+        All
+      </a>
+      <% sectors.forEach(sec => { const s = sector(sec.sector_name); const on = activeSector === sec.sector_name; %>
+        <a href="/solutions/projects?sector=<%= encodeURIComponent(sec.sector_name) %>"
+           class="text-sm px-3 py-1.5 border rounded-full <%= on ? s.chip + ' font-medium' : 'border-rule text-muted hover:border-ink hover:text-ink' %>">
+          <%= sec.sector_name %>
+        </a>
+      <% }) %>
     </div>
+
   </div>
+</section>
 
-  <!-- Projects Table -->
-  <div class="container mx-auto mt-6">
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Title</th>
-          <th>Sector</th>
-          <th>Summary</th>
-          <th>Action</th>
-        </tr>
-      </thead>
+<section class="mx-auto max-w-6xl px-5 py-10">
+  <% if (projects.length) { %>
+    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <% projects.forEach(project => { %>
+        <%- include('partials/card', { project: project }) %>
+      <% }) %>
+    </div>
+  <% } else { %>
+    <div class="border border-rule bg-surface p-10 text-center">
+      <p class="font-display text-xl">Nothing here yet</p>
+      <p class="mt-2 text-muted">No solutions are listed in this sector.</p>
+      <a href="/solutions/projects" class="btn-solid mt-6">Browse all solutions</a>
+    </div>
+  <% } %>
+</section>
 
-      <tbody>
-        <% projects.forEach(project => { %>
-          <tr>
-            <td><%= project.title %></td>
-
-            <!-- Sector Links -->
-            <td>
-              <a href="/solutions/projects?sector=<%= project.Sector?.sector_name %>" class="btn btn-outline btn-xs">
-                <%= project.Sector?.sector_name %>
-              </a>
-            </td>
-
-            <td><%= project.summary_short %></td>
-
-            <td class="flex gap-2">
-
-              <!-- View Details -->
-              <a href="/solutions/projects/<%= project.id %>" class="btn btn-primary btn-xs">Details</a>
-
-              <!-- SHOW Edit + Delete ONLY IF LOGGED IN -->
-              <% if (locals.session && locals.session.user) { %>
-                <a href="/solutions/editProject/<%= project.id %>" class="btn btn-warning btn-xs">Edit</a>
-                <a href="/solutions/deleteProject/<%= project.id %>" class="btn btn-error btn-xs">Delete</a>
-              <% } %>
-
-            </td>
-          </tr>
-        <% }) %>
-      </tbody>
-    </table>
-  </div>
-
-</body>
-</html>
+<%- include('partials/foot') %>

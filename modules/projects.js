@@ -144,8 +144,21 @@ function deleteProject(id){
 
 
 
+// All Sectors
+
+function getAllSectors(){
+    return new Promise((resolve,reject)=>{
+        Sector.findAll({ order:["id"] })
+        .then(data=>resolve(data))
+        .catch(err=>reject(err));
+    });
+}
+
+
+
 module.exports = {
     initialize,
+    getAllSectors,
     getAllProjects,
     getProjectById,
     getProjectsBySector,

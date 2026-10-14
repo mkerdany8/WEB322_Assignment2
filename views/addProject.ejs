@@ -1,29 +1,62 @@
-<%- include('partials/navbar') %>
+<%- include('partials/head', { pageTitle: "Add a solution — Climate Solutions" }) %>
 
-<h1 class="text-3xl font-bold mb-6">Add Project</h1>
+<section class="mx-auto max-w-2xl px-5 py-12">
 
-<form method="POST" action="/solutions/addProject" class="space-y-4">
+  <h1 class="font-display text-3xl">Add a solution</h1>
+  <p class="mt-2 text-muted">It appears in the catalogue as soon as you save it.</p>
 
-    <input type="text" name="title" placeholder="Title" required class="input input-bordered w-full" />
+  <form method="POST" action="/solutions/addProject" class="mt-8 bg-surface border border-rule p-6 flex flex-col gap-5">
 
-    <input type="url" name="feature_img_url" placeholder="Feature Image URL" required class="input input-bordered w-full" />
+    <div>
+      <label class="label" for="title">Title</label>
+      <input id="title" type="text" name="title" class="field" required />
+    </div>
 
-    <select name="sector_id" required class="select select-bordered w-full">
-        <option value="">Select Sector</option>
-        <option value="1">Land Sinks</option>
-        <option value="2">Industry</option>
-        <option value="3">Transportation</option>
-        <option value="4">Electricity</option>
-        <option value="5">Food, Agriculture, and Land Use</option>
-    </select>
+    <div>
+      <label class="label" for="sector_id">Sector</label>
+      <select id="sector_id" name="sector_id" class="field" required>
+        <option value="">Choose a sector</option>
+        <% sectors.forEach(sec => { %>
+          <option value="<%= sec.id %>"><%= sec.sector_name %></option>
+        <% }) %>
+      </select>
+    </div>
 
-    <textarea name="intro_short" placeholder="Intro Short" required class="textarea textarea-bordered w-full"></textarea>
+    <div>
+      <label class="label" for="feature_img_url">Image address</label>
+      <input id="feature_img_url" type="url" name="feature_img_url" class="field"
+             placeholder="https://" required />
+    </div>
 
-    <textarea name="summary_short" placeholder="Summary Short" required class="textarea textarea-bordered w-full"></textarea>
+    <div>
+      <label class="label" for="summary_short">Summary</label>
+      <textarea id="summary_short" name="summary_short" rows="2" class="field" required></textarea>
+      <p class="mt-1 text-xs text-muted">One or two sentences. This is what shows on the cards.</p>
+    </div>
 
-    <textarea name="impact" placeholder="Impact" required class="textarea textarea-bordered w-full"></textarea>
+    <div>
+      <label class="label" for="intro_short">What it is</label>
+      <textarea id="intro_short" name="intro_short" rows="4" class="field" required></textarea>
+    </div>
 
-    <input type="url" name="original_source_url" placeholder="Source URL" required class="input input-bordered w-full" />
+    <div>
+      <label class="label" for="impact">Why it matters</label>
+      <textarea id="impact" name="impact" rows="4" class="field" required></textarea>
+    </div>
 
-    <button class="btn btn-success w-full">Add Project</button>
-</form>
+    <div>
+      <label class="label" for="original_source_url">Source address</label>
+      <input id="original_source_url" type="url" name="original_source_url" class="field"
+             placeholder="https://" required />
+    </div>
+
+    <div class="flex gap-3 pt-1">
+      <button type="submit" class="btn-solid">Save solution</button>
+      <a href="/solutions/projects" class="btn-quiet">Cancel</a>
+    </div>
+
+  </form>
+
+</section>
+
+<%- include('partials/foot') %>
