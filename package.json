@@ -1,7 +1,7 @@
 {
-  "name": "webas1",
+  "name": "climate-solutions-webapp",
   "version": "1.0.0",
-  "description": "",
+  "description": "Full-stack web app cataloguing climate solutions by sector, with session-protected admin CRUD.",
   "license": "ISC",
   "author": "Moustafa Elkerdany",
   "type": "commonjs",
