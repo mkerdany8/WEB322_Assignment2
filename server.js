@@ -125,4 +125,14 @@ data.initialize().then(()=>{
 
     app.listen(PORT,()=>console.log(`Running → http://localhost:${PORT}`));
 
+}).catch(err=>{
+
+    // Database unreachable. Serve a styled error page instead of letting the
+    // process crash, which on a serverless host surfaces as a raw 500.
+    console.error("DB init failed:",err);
+
+    app.use((req,res)=>res.status(503).render("500",{message:"The database is currently unavailable. Please try again later."}));
+
+    app.listen(PORT,()=>console.log(`Running in degraded mode on ${PORT}`));
+
 });
