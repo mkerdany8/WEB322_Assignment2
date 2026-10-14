@@ -2,6 +2,8 @@
 
 A full-stack Node.js web application that catalogues climate solutions organised by sector, with a password-protected admin area for managing entries.
 
+**Live site:** https://web-322-assignment2-kappa.vercel.app
+
 ## Features
 
 - Browse 30 climate solution projects across 5 sectors (Electricity, Transportation, Industry, Land Sinks, and Food, Agriculture & Land Use)
